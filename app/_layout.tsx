@@ -1,6 +1,29 @@
-import '@/global.css';
-import { Stack } from "expo-router";
+import { useFonts } from "expo-font";
+import { SplashScreen, Stack } from 'expo-router';
+import { useEffect } from "react";
 
-export default function RootLayout() {
-  return <Stack screenOptions={{ headerShown:false}}/>;
+export default function Layout() {
+  const [fontsLoaded] = useFonts({
+    'sans-regular': require('../assets/fonts/PlusJakartaSans-Regular.ttf'),
+    'sans-light': require('../assets/fonts/PlusJakartaSans-Light.ttf'),
+    'sans-medium': require('../assets/fonts/PlusJakartaSans-Medium.ttf'),
+    'sans-semibold': require('../assets/fonts/PlusJakartaSans-SemiBold.ttf'),
+    'sans-bold': require('../assets/fonts/PlusJakartaSans-Bold.ttf'),
+    'sans-extrabold': require('../assets/fonts/PlusJakartaSans-ExtraBold.ttf')
+  });
+
+  useEffect(() => {
+    if(fontsLoaded) {
+      SplashScreen.hideAsync()
+    }
+  }, [fontsLoaded])
+
+  if (!fontsLoaded) return null;
+
+  return (
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+    </Stack>
+  );
 }
+
