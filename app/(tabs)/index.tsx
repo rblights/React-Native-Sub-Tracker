@@ -11,11 +11,14 @@ import { styled } from "nativewind";
 import { useState } from "react";
 import { FlatList, Image, Text, View } from "react-native";
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
+import { useUser } from '@clerk/expo';
 
 const SafeAreaView = styled(RNSafeAreaView)
  
 export default function App() {
-  const [expandedSubscriptionId, setExpandedSubscriptionId] = useState<string | null>(null)
+    const { user } = useUser();
+    const displayName = user?.firstName || user?.fullName || user?.emailAddresses[0]?.emailAddress || 'User';
+    const [expandedSubscriptionId, setExpandedSubscriptionId] = useState<string | null>(null)
   return (
     <SafeAreaView className="flex-1 p-5 bg-background">
         <FlatList 
@@ -24,10 +27,10 @@ export default function App() {
                       <View className="home-header">
                           <View className="home-user">
                               <Image
-                                source={images.avatar}
+                                  source={user?.imageUrl ? { uri: user.imageUrl } : images.avatar}
                                 className="home-avatar"
                               />
-                              <Text className="home-user-name">{HOME_USER.name}</Text>
+                              <Text className="home-user-name">{displayName}</Text>
                           </View>
                           <Image 
                             source={icons.add}

@@ -180,7 +180,7 @@ const SignIn = () => {
                     setEmailAddress(value);
                     if (localEmailError) setLocalEmailError('');
                   }}
-                  placeholder="you@example.com"
+                  placeholder="name@example.com"
                   placeholderTextColor="rgba(0,0,0,0.4)"
                   autoCapitalize="none"
                   autoComplete="email"
