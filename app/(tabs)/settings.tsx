@@ -1,10 +1,11 @@
+import images from '@/constants/images';
 import { useClerk, useUser } from "@clerk/expo";
+import { usePostHog } from 'posthog-react-native';
 import { useRouter } from "expo-router";
 import { styled } from "nativewind";
 import React from 'react';
-import { ActivityIndicator, Pressable, Text, View, Image } from 'react-native';
+import { ActivityIndicator, Image, Pressable, Text, View } from 'react-native';
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
-import images from '@/constants/images';
 
 const SafeAreaView = styled(RNSafeAreaView)
 
@@ -12,6 +13,7 @@ const settings = () => {
   const { user } = useUser();
   const { signOut } = useClerk();
   const router = useRouter();
+  const posthog = usePostHog();
   const [signingOut, setSigningOut] = React.useState(false);
 
   const displayName = user?.firstName || user?.fullName || user?.emailAddresses[0]?.emailAddress || 'User';
@@ -20,6 +22,8 @@ const settings = () => {
   const handleSignOut = async () => {
     setSigningOut(true);
     try {
+      posthog.capture('user_signed_out');
+      posthog.reset();
       await signOut();
       router.replace('/(auth)/sign-in');
     } finally {
