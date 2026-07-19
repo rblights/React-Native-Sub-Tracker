@@ -1,5 +1,6 @@
 import { useSignUp } from '@clerk/expo';
 import clsx from 'clsx';
+import { usePostHog } from 'posthog-react-native';
 import { Link, useRouter } from 'expo-router';
 import { styled } from 'nativewind';
 import React from 'react';
@@ -22,6 +23,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const SignUp = () => {
   const { signUp, errors, fetchStatus } = useSignUp();
   const router = useRouter();
+  const posthog = usePostHog();
 
   const [name, setName] = React.useState('');
   const [emailAddress, setEmailAddress] = React.useState('');
@@ -97,6 +99,7 @@ const SignUp = () => {
         return;
       }
       if (signUp.status === 'complete') {
+        posthog.capture('user_signed_up');
         await signUp.finalize({ navigate: finalizeNavigate });
       }
     } finally {

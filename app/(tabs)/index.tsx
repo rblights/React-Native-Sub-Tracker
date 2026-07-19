@@ -1,22 +1,24 @@
 import ListHeading from "@/components/ListHeading";
 import SubscriptionCard from "@/components/SubscriptionCard";
 import UpcomingSubscriptionCard from "@/components/UpcomingSubscriptionCard";
-import { HOME_BALANCE, HOME_SUBSCRIPTIONS, HOME_USER, UPCOMING_SUBSCRIPTIONS } from "@/constants/data";
+import { HOME_BALANCE, HOME_SUBSCRIPTIONS, UPCOMING_SUBSCRIPTIONS } from "@/constants/data";
 import { icons } from "@/constants/icons";
 import images from "@/constants/images";
 import "@/global.css";
 import { formatCurrency } from "@/lib/utils";
+import { useUser } from '@clerk/expo';
+import { usePostHog } from 'posthog-react-native';
 import dayjs from "dayjs";
 import { styled } from "nativewind";
 import { useState } from "react";
 import { FlatList, Image, Text, View } from "react-native";
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
-import { useUser } from '@clerk/expo';
 
 const SafeAreaView = styled(RNSafeAreaView)
  
 export default function App() {
     const { user } = useUser();
+    const posthog = usePostHog();
     const displayName = user?.firstName || user?.fullName || user?.emailAddresses[0]?.emailAddress || 'User';
     const [expandedSubscriptionId, setExpandedSubscriptionId] = useState<string | null>(null)
   return (
@@ -67,11 +69,19 @@ export default function App() {
           )}
           data={HOME_SUBSCRIPTIONS}
           keyExtractor={(item) => item.id}
-          renderItem={({item}) => (<SubscriptionCard 
-                                    {... item} 
+          renderItem={({item}) => (<SubscriptionCard
+                                    {... item}
                                     expanded={expandedSubscriptionId === item.id}
-                                    onPress={() => setExpandedSubscriptionId((currentId) =>
-                                      (currentId === item.id ? null : item.id))}
+                                    onPress={() => {
+                                      const isExpanding = expandedSubscriptionId !== item.id;
+                                      setExpandedSubscriptionId((currentId) =>
+                                        (currentId === item.id ? null : item.id));
+                                      if (isExpanding) {
+                                        posthog.capture('subscription_card_expanded', {
+                                          subscription_id: item.id,
+                                        });
+                                      }
+                                    }}
                                   />
           )}
           extraData={expandedSubscriptionId}

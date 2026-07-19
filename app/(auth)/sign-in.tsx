@@ -1,5 +1,6 @@
 import { useSignIn } from '@clerk/expo';
 import clsx from 'clsx';
+import { usePostHog } from 'posthog-react-native';
 import { Link, useRouter } from 'expo-router';
 import { styled } from 'nativewind';
 import React from 'react';
@@ -23,10 +24,12 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const SignIn = () => {
   const { signIn, errors, fetchStatus } = useSignIn();
   const router = useRouter();
+  const posthog = usePostHog();
 
   const [emailAddress, setEmailAddress] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [localEmailError, setLocalEmailError] = React.useState('');
+  const [localPasswordError, setLocalPasswordError] = React.useState('');
   const [submitting, setSubmitting] = React.useState(false);
 
   // Forgot-password reset flow
@@ -52,11 +55,15 @@ const SignIn = () => {
 
   const handleSubmit = async () => {
     setLocalEmailError('');
+    setLocalPasswordError('');
     if (!EMAIL_REGEX.test(emailAddress)) {
       setLocalEmailError('Enter a valid email address.');
       return;
     }
-    if (!password) return;
+      if (!password) {
+    setLocalPasswordError('Password is required.');
+    return;
+    }
 
     setSubmitting(true);
     try {
@@ -64,6 +71,7 @@ const SignIn = () => {
       if (error) return;
 
       if (signIn.status === 'complete') {
+        posthog.capture('user_signed_in');
         await signIn.finalize({ navigate: finalizeNavigate });
       }
     } finally {
@@ -93,7 +101,7 @@ const SignIn = () => {
     try {
       const created = await signIn.create({ identifier: emailAddress });
       if (created.error) {
-        setResetError('We couldn’t find an account with that email.');
+        setResetError('If an account exists, a reset code has been sent.');
         return;
       }
       const sent = await signIn.resetPasswordEmailCode.sendCode();
@@ -101,6 +109,7 @@ const SignIn = () => {
         setResetError('Something went wrong sending your code. Please try again.');
         return;
       }
+      posthog.capture('password_reset_requested');
       setResetSentTo(emailAddress);
       setResetStep('reset');
     } finally {
@@ -133,6 +142,7 @@ const SignIn = () => {
         return;
       }
       if (signIn.status === 'complete') {
+        posthog.capture('password_reset_completed');
         setResetOpen(false);
         await signIn.finalize({ navigate: finalizeNavigate });
       }
