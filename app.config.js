@@ -9,6 +9,10 @@ export default {
     userInterfaceStyle: 'automatic',
     ios: {
       supportsTablet: true,
+      "bundleIdentifier": "com.rblights.ReactNativeSubTracker",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     android: {
       adaptiveIcon: {
@@ -61,6 +65,9 @@ export default {
     extra: {
       posthogProjectToken: process.env.POSTHOG_PROJECT_TOKEN,
       posthogHost: process.env.POSTHOG_HOST || 'https://us.i.posthog.com',
+            eas: {
+        projectId: "848b058b-1c81-4934-a358-ce673a03ac81"
+      }
     },
   },
 }
