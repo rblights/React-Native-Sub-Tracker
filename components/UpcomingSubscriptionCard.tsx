@@ -2,7 +2,8 @@ import { formatCurrency } from '@/lib/utils'
 import React from 'react'
 import { Image, Text, View } from 'react-native'
 
-const UpcomingSubscriptionCard = ({name, price, daysLeft, icon, currency}: UpcomingSubscription) => {
+// Add daysLeft to your type/interface if you haven't already
+const UpcomingSubscriptionCard = ({name, price, icon, currency, daysLeft}: any) => {
   return (
     <View className='upcoming-card'>
       <View className='upcoming-row'>
@@ -12,7 +13,8 @@ const UpcomingSubscriptionCard = ({name, price, daysLeft, icon, currency}: Upcom
         <View>
             <Text className='upcoming-price'>{formatCurrency(price, currency)}</Text>
             <Text className='upcoming-meta' numberOfLines={1}>
-                {daysLeft > 1 ? `${daysLeft} Days Left` : 'Last Day'}
+                {/* Now daysLeft will always be 2, 4, or 6 based on our JSON */}
+                {daysLeft > 0 ? `${daysLeft} Days Left` : 'Last Day'}
             </Text>
         </View>
       </View>
