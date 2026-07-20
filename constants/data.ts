@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { icons } from "./icons";
 
 export const tabs: AppTab[] = [
@@ -16,14 +17,16 @@ export const HOME_BALANCE = {
     nextRenewalDate: "2026-03-18T09:00:00.000Z",
 };
 
-export const UPCOMING_SUBSCRIPTIONS: UpcomingSubscription[] = [
+export const UPCOMING_SUBSCRIPTIONS: Subscription[] = [
     {
         id: "spotify",
         icon: icons.spotify,
         name: "Spotify",
         price: 5.99,
         currency: "USD",
-        daysLeft: 2,
+        renewalDate: dayjs().add(2, 'day').toISOString(),
+        status: 'active',
+        billing: 'Monthly',
     },
     {
         id: "notion",
@@ -31,7 +34,9 @@ export const UPCOMING_SUBSCRIPTIONS: UpcomingSubscription[] = [
         name: "Notion",
         price: 12.0,
         currency: "USD",
-        daysLeft: 4,
+        renewalDate: dayjs().add(4, 'day').toISOString(),
+        status: 'active',
+        billing: 'Monthly',
     },
     {
         id: "figma",
@@ -39,7 +44,9 @@ export const UPCOMING_SUBSCRIPTIONS: UpcomingSubscription[] = [
         name: "Figma",
         price: 15.0,
         currency: "USD",
-        daysLeft: 6,
+        renewalDate: dayjs().add(6, 'day').toISOString(),
+        status: 'active',
+        billing: 'Monthly',
     },
 ];
 

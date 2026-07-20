@@ -12,19 +12,21 @@ declare global {
         icon: ImageSourcePropType;
     }
 
-    interface Subscription {
+    export interface Subscription {
         id: string;
-        icon: ImageSourcePropType;
+        icon: any;
         name: string;
+        price: number;
+        currency?: string;
+        renewalDate?: string;
+        status: 'active' | 'paused' | 'cancelled'; // Use union types for safety
+        // Make these optional if they don't exist for every type of subscription
+        frequency?: string;
         plan?: string;
         category?: string;
         paymentMethod?: string;
-        status?: string;
         startDate?: string;
-        price: number;
-        currency?: string;
-        billing: string;
-        renewalDate?: string;
+        billing?: string; // Optional because upcoming subs might not have this yet
         color?: string;
     }
 
@@ -33,15 +35,6 @@ declare global {
         onPress: () => void;
         onCancelPress?: () => void;
         isCancelling?: boolean;
-    }
-
-    interface UpcomingSubscription {
-        id: string;
-        icon: ImageSourcePropType;
-        name: string;
-        price: number;
-        currency?: string;
-        daysLeft: number;
     }
 
     interface UpcomingSubscriptionCardProps
@@ -53,3 +46,4 @@ declare global {
 }
 
 export { };
+
