@@ -13,8 +13,11 @@ const UpcomingSubscriptionCard = ({name, price, icon, currency, daysLeft}: any) 
         <View>
             <Text className='upcoming-price'>{formatCurrency(price, currency)}</Text>
             <Text className='upcoming-meta' numberOfLines={1}>
-                {/* Now daysLeft will always be 2, 4, or 6 based on our JSON */}
-                {daysLeft > 0 ? `${daysLeft} Days Left` : 'Last Day'}
+                {daysLeft > 1
+                    ? `${daysLeft} Days Left`
+                    : daysLeft === 1
+                        ? '1 Day Left'
+                        : 'Last Day'}
             </Text>
         </View>
       </View>

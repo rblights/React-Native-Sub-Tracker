@@ -14,7 +14,7 @@ declare global {
 
     export interface Subscription {
         id: string;
-        icon: any;
+        icon: ImageSourcePropType;
         name: string;
         price: number;
         currency?: string;
@@ -38,7 +38,9 @@ declare global {
     }
 
     interface UpcomingSubscriptionCardProps
-        extends Omit<UpcomingSubscription, "id"> {}
+        extends Pick<Subscription, "name" | "price" | "icon" | "currency"> {
+        daysLeft: number;
+    }
 
     interface ListHeadingProps {
         title: string;

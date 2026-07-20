@@ -35,6 +35,9 @@ const Subscriptions = () => {
                         />
                     </View>
                 }
+                ListEmptyComponent={
+                    <Text className="text-center text-dark mt-10">No subscriptions found.</Text>
+                }
                 renderItem={({ item }) => (
                     <SubscriptionCard
                         {...item}
